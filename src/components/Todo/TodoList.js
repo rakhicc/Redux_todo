@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect} from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { notes } from "../../notes";
@@ -7,6 +8,8 @@ import * as actionTypes from '../store/actions'
 const TodoList = () => {
 
   const notes=useSelector(state=>state.notes);
+  const [filteredValue, setFilteredValue] = useState();
+  const [filterList, setFilteredList] = useState(notes);
   const dispatch=useDispatch();
   const removeHandler = (id) => {
     console.log(id, "remove was clicked");
@@ -22,11 +25,33 @@ dispatch({
       payload:id
     })
   };
+  useEffect(() => {
+    if (filteredValue === "true") {
+      setFilteredList(
+        notes.filter((item) => item.done === !!filteredValue)
+      );
+    } else if (filteredValue === "false") {
+      setFilteredList(
+        notes.filter((item) => item.done !== !!filteredValue)
+      );
+    } else {
+      setFilteredList(notes);
+    }
+  }, [filteredValue, notes]);
+
+  const filterHandler = (e) => {
+    setFilteredValue(e.target.value);
+  };
 
   return (
     <div className={classes.todos}>
       <h1>Notes:</h1>
-      {notes.map((note) => {
+      <select name="done" defaultValue="all" onChange={filterHandler}>
+        <option value="true">Done</option>
+        <option value="false">Not done</option>
+        <option value="all">All</option>
+      </select>
+      {filterList.map((note) => {
         return (
           <div
             onClick={() => doneHandler(note.id)}
