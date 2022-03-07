@@ -8,7 +8,7 @@ import classes from "./TodoList.module.css";
 import * as actionTypes from '../store/actions'
 const TodoList = () => {
 
-  const notes=useSelector(state=>state.notes);
+  const notes=useSelector((state)=>state);
   const [filteredValue, setFilteredValue] = useState();
   const [searchedValue, setSearchedValue] = useState('');
   const [filterList, setFilteredList] = useState(notes);
@@ -49,18 +49,19 @@ dispatch({
     setFilteredValue(e.target.value);
   };
   const searchHandler = (e) => {
-    console.log('serch method');
+    console.log('search method');
     setSearchedValue(e.target.value);
     console.log('serchvalue',searchedValue);
     setFilteredList(
-      notes.filter((item) => item.title.toLowerCase().includes(searchedValue.toLowerCase()))
+      notes.filter((item) => (item.title.toLowerCase().includes(searchedValue.toLowerCase())) || (item.task.toLowerCase().includes(searchedValue.toLowerCase())))
     );
+    
   };
   return (
     <div className={classes.todos}>
       <h1>Notes:</h1>
       <label>Search</label>
-      <input type="text" name="search" onChange={searchHandler}/>
+      <input type="text" name="search" onChange={searchHandler}/><br></br><br></br>
       <select name="done" defaultValue="all" onChange={filterHandler}>
         <option value="true">Done</option>
         <option value="false">Not done</option>
