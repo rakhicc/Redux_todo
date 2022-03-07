@@ -2,13 +2,15 @@ import React from "react";
 import { useState, useEffect} from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { notes } from "../../notes";
+
+
 import classes from "./TodoList.module.css";
 import * as actionTypes from '../store/actions'
 const TodoList = () => {
 
   const notes=useSelector(state=>state.notes);
   const [filteredValue, setFilteredValue] = useState();
+  const [searchedValue, setSearchedValue] = useState('');
   const [filterList, setFilteredList] = useState(notes);
   const dispatch=useDispatch();
   const removeHandler = (id) => {
@@ -27,7 +29,11 @@ dispatch({
   };
   useEffect(() => {
     if (filteredValue === "true") {
+      console.log(filteredValue);
+        console.log(!filteredValue);
+        console.log(!!filteredValue);
       setFilteredList(
+        
         notes.filter((item) => item.done === !!filteredValue)
       );
     } else if (filteredValue === "false") {
@@ -42,10 +48,19 @@ dispatch({
   const filterHandler = (e) => {
     setFilteredValue(e.target.value);
   };
-
+  const searchHandler = (e) => {
+    console.log('serch method');
+    setSearchedValue(e.target.value);
+    console.log('serchvalue',searchedValue);
+    setFilteredList(
+      notes.filter((item) => item.title.toLowerCase().includes(searchedValue.toLowerCase()))
+    );
+  };
   return (
     <div className={classes.todos}>
       <h1>Notes:</h1>
+      <label>Search</label>
+      <input type="text" name="search" onChange={searchHandler}/>
       <select name="done" defaultValue="all" onChange={filterHandler}>
         <option value="true">Done</option>
         <option value="false">Not done</option>
